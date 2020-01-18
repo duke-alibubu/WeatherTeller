@@ -5,5 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 
 
 class WeatherTellerViewModel(application: Application): AndroidViewModel(application) {
+    fun locationEntered(location: String){
 
+    }
 }
