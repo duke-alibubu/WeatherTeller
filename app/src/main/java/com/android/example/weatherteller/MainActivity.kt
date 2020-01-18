@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.enter.setOnClickListener {
             viewModel.locationEntered(binding.location.text.toString())
-            Toast.makeText(this, binding.location.text.toString(), Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, binding.location.text.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 }
