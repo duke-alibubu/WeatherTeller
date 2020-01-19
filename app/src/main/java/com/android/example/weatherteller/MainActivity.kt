@@ -14,8 +14,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.setLifecycleOwner(this)
+
         val viewModelFactory: WeatherTellerViewModelFactory = WeatherTellerViewModelFactory(application)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(WeatherTellerViewModel::class.java)
+
+        binding.viewModel = viewModel
 
         binding.enter.setOnClickListener {
             viewModel.locationEntered(binding.location.text.toString())
