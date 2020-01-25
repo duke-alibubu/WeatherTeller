@@ -39,7 +39,8 @@ class WeatherTellerViewModel(application: Application): AndroidViewModel(applica
             var getDeferred = geoCodeClient.retrofitService.getLatLong("pk.eyJ1IjoiZHVrZS1hbGlidWJ1IiwiYSI6ImNrM3pqdHZpejBkdzczbGw5eG1oN3IzcnUifQ.wRfkb12h2UF7fF_d8tQ5vA")
             try {
                 var testResult = getDeferred.await()
-                _test.value = testResult.type
+                _test.value = "Latitude: ${testResult.features[0].center[1]} \n" +
+                            "Longtitude: ${testResult.features[0].center[0]}"
             }
             catch (e: Exception){
                 _test.value = e.toString()
