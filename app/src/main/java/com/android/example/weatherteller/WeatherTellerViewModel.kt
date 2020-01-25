@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.android.example.weatherteller.network.forecast.ForecastClient
 import com.android.example.weatherteller.network.geocode.GeocodeClient
 import com.android.example.weatherteller.network.geocode.LatLongProperty
 import kotlinx.coroutines.CoroutineScope
@@ -31,9 +32,19 @@ class WeatherTellerViewModel(application: Application): AndroidViewModel(applica
         val last = ".json/"
         return first + location + last
     }
+
+    private fun getForeCastUrl(): String?{
+        if (_latitude.value == null || _longtitude.value == null)
+            return null
+        return "https://api.darksky.net/forecast/ce274fb0aa7b3339f6f77be767a3e8da/" + _latitude.value + ',' + _longtitude.value + '/'
+    }
     fun locationEntered(location: String){
         val geoCode: String =  getGeoCodeUrl(location)
         getLatLong(geoCode)
+        val forecastUrl: String? = getForeCastUrl()
+        forecastUrl?.let{
+            getForecast(forecastUrl)
+        }
     }
     private fun getLatLong(geoCode: String){
         coroutineScope.launch {
@@ -43,11 +54,24 @@ class WeatherTellerViewModel(application: Application): AndroidViewModel(applica
                 var testResult = getDeferred.await()
                 _latitude.value = testResult.features[0].center[1]
                 _longtitude.value = testResult.features[0].center[0]
-                _test.value = "Latitude: ${_latitude.value} \n" +
-                            "Longtitude: ${_longtitude.value}"
             }
             catch (e: Exception){
                 _test.value = e.toString()
+            }
+        }
+    }
+    private fun getForecast(forecastUrl: String){
+        coroutineScope.launch {
+            val forecastClient = ForecastClient(forecastUrl)
+            val getDeferred = forecastClient.retrofitService.getForecast()
+            try {
+                var result = getDeferred.await()
+                _test.value = "${result.daily.data[0].summary}\n" +
+                            "It is currently ${result.currently.temperature} degree out.\n" +
+                            "There is a ${result.currently.precipProbability}% chance to rain."
+            }
+            catch (e: Exception){
+                _test.value = "Cannot retrieve forecast!"
             }
         }
     }

@@ -6,10 +6,14 @@ data class Forecast (
 )
 
 data class DailyUpdate (
-    val summary: String
+    val data: List<MyData> = listOf()
 )
 
 data class Temp (
     val temperature: Float,
     val precipProbability: Float
+)
+
+data class MyData (
+    val summary: String
 )
