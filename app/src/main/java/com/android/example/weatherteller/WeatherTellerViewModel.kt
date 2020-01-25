@@ -21,6 +21,8 @@ class WeatherTellerViewModel(application: Application): AndroidViewModel(applica
     private val _test = MutableLiveData<String>()
     val test: LiveData<String>
         get() = _test
+    private val _latitude = MutableLiveData<Float>()
+    private val _longtitude = MutableLiveData<Float>()
     init {
         _test.value = ""
     }
@@ -39,8 +41,10 @@ class WeatherTellerViewModel(application: Application): AndroidViewModel(applica
             var getDeferred = geoCodeClient.retrofitService.getLatLong("pk.eyJ1IjoiZHVrZS1hbGlidWJ1IiwiYSI6ImNrM3pqdHZpejBkdzczbGw5eG1oN3IzcnUifQ.wRfkb12h2UF7fF_d8tQ5vA")
             try {
                 var testResult = getDeferred.await()
-                _test.value = "Latitude: ${testResult.features[0].center[1]} \n" +
-                            "Longtitude: ${testResult.features[0].center[0]}"
+                _latitude.value = testResult.features[0].center[1]
+                _longtitude.value = testResult.features[0].center[0]
+                _test.value = "Latitude: ${_latitude.value} \n" +
+                            "Longtitude: ${_longtitude.value}"
             }
             catch (e: Exception){
                 _test.value = e.toString()
